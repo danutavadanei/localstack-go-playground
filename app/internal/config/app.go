@@ -1,9 +1,12 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/spf13/viper"
+)
 
 type AppConfig struct {
-	AWSConfig        AWSConfig
+	AWSConfig        *aws.Config
 	HTTPServerConfig HTTPServerConfig
 }
 

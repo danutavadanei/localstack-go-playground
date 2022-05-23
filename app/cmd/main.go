@@ -23,7 +23,6 @@ import (
 
 const (
 	s3Bucket = "spike-test-bucket"
-	s3Region = "us-west-2"
 )
 
 func downloadHandler(client *s3.S3) func(http.ResponseWriter, *http.Request) {
@@ -75,16 +74,24 @@ func main() {
 	signal.Notify(sigChannel, os.Interrupt, syscall.SIGTERM)
 
 	cfg := config.NewAppConfig(v)
-	awsCfg := aws.NewConfig().WithEndpoint(cfg.AWSConfig.Endpoint).WithS3ForcePathStyle(true).WithRegion(s3Region)
 
-	sess := session.Must(session.NewSession(awsCfg))
+	sess := session.Must(session.NewSession(cfg.AWSConfig))
 	uploader := s3manager.NewUploader(sess)
+	s3c := s3.New(sess)
 
 	m := mux.NewRouter()
 	m.HandleFunc("/download", downloadHandler(s3.New(sess)))
 	m.HandleFunc("/upload", uploadHandler(uploader))
 	m.HandleFunc("/s3/buckets", func(w http.ResponseWriter, r *http.Request) {
-		_, _ = w.Write([]byte("list"))
+		// Example sending a request using the ListBucketsRequest method.
+		req, resp := s3c.ListBucketsRequest(&s3.ListBucketsInput{})
+
+		err := req.Send()
+		if err == nil { // resp is now filled
+			_, _ = w.Write([]byte(resp.String()))
+		} else {
+			_, _ = w.Write([]byte(fmt.Sprintf("error listing s3 buckets: %v", err)))
+		}
 	})
 
 	srvShutdown := make(chan bool)

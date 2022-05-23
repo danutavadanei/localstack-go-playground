@@ -19,8 +19,8 @@ func NewHTTPServerConfig(v *viper.Viper) HTTPServerConfig {
 
 	return HTTPServerConfig{
 		Addr:         v.GetString("HTTP_ADDR"),
-		ReadTimeout:  time.Second * 5,
-		WriteTimeout: time.Second * 5,
+		ReadTimeout:  time.Second * 30,
+		WriteTimeout: time.Second * 30,
 		IdleTimeout:  time.Second * 120,
 	}
 }
