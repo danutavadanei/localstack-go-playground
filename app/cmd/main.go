@@ -82,6 +82,7 @@ func main() {
 	m := mux.NewRouter()
 	m.HandleFunc("/download", downloadHandler(s3.New(sess)))
 	m.HandleFunc("/upload", uploadHandler(uploader))
+
 	m.HandleFunc("/s3/buckets", func(w http.ResponseWriter, r *http.Request) {
 		// Example sending a request using the ListBucketsRequest method.
 		req, resp := s3c.ListBucketsRequest(&s3.ListBucketsInput{})
@@ -92,7 +93,21 @@ func main() {
 		} else {
 			_, _ = w.Write([]byte(fmt.Sprintf("error listing s3 buckets: %v", err)))
 		}
-	})
+	}).Methods("GET").Name("listBuckets")
+
+	m.HandleFunc("/s3/buckets/{bucket}", func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		bucket := vars["bucket"]
+
+		// Example sending a request using the ListBucketsRequest method.
+		resp, err := s3c.ListObjects(&s3.ListObjectsInput{Bucket: &bucket})
+
+		if err == nil { // resp is now filled
+			_, _ = w.Write([]byte(resp.String()))
+		} else {
+			_, _ = w.Write([]byte(fmt.Sprintf("error listing s3 bucket(%s): %v", bucket, err)))
+		}
+	}).Methods("GET").Name("listBucketObjects")
 
 	srvShutdown := make(chan bool)
 	srv := server.StartHttpServer(cfg.HTTPServerConfig, m, srvShutdown)
