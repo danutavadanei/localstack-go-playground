@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -39,25 +38,47 @@ func main() {
 		req, resp := s3client.ListBucketsRequest(&s3.ListBucketsInput{})
 
 		err := req.Send()
-		if err == nil {
-			_, _ = w.Write([]byte(resp.String()))
-		} else {
-			_, _ = w.Write([]byte(fmt.Sprintf("error listing s3 buckets: %v", err)))
+
+		if err != nil {
+			log.Printf("error listing s3 buckets: %v", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
+		
+		bytes, err := json.Marshal(resp)
+
+		if err != nil {
+			log.Printf("error encoding s3 response: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(bytes)
 	}).Methods("GET").Name("listBuckets")
 
 	m.HandleFunc("/s3/buckets/{bucket}", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		bucket := vars["bucket"]
 
-		// Example sending a request using the ListBucketsRequest method.
 		resp, err := s3client.ListObjects(&s3.ListObjectsInput{Bucket: &bucket})
 
-		if err == nil { // resp is now filled
-			_, _ = w.Write([]byte(resp.String()))
-		} else {
-			_, _ = w.Write([]byte(fmt.Sprintf("error listing s3 bucket(%s): %v", bucket, err)))
+		if err != nil {
+			log.Printf("error listing s3 bucket (%s): %v", bucket, err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
+
+		bytes, err := json.Marshal(resp)
+
+		if err != nil {
+			log.Printf("error encoding s3 response: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(bytes)
 	}).Methods("GET").Name("listBucketObjects")
 
 	m.HandleFunc("/s3/buckets/{bucket}", func(w http.ResponseWriter, r *http.Request) {
@@ -137,7 +158,6 @@ func main() {
 	<-sigChannel
 	go shutdown(srv)
 	<-srvShutdown
-
 }
 
 func shutdown(server *http.Server) {
