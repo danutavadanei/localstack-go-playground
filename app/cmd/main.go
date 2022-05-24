@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -44,7 +45,7 @@ func main() {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		
+
 		bytes, err := json.Marshal(resp)
 
 		if err != nil {
@@ -138,8 +139,9 @@ func main() {
 			return
 		}
 
-		w.Header().Set("Content-Disposition", *o.ContentDisposition)
-		w.Header().Set("Cache-Control", *o.CacheControl)
+		w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", key))
+		w.Header().Set("Cache-Control", "no-store")
+		w.Header().Set("Content-Type", *o.ContentType)
 
 		bytesWritten, err := io.Copy(w, o.Body)
 
