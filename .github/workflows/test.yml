@@ -11,7 +11,7 @@ on:
 
 jobs:
 
-  build:
+  test:
     runs-on: ubuntu-latest
 
     services:
@@ -31,9 +31,9 @@ jobs:
 
     - name: Configure localstack
       run: |
-        aws s3 create-bucket --bucket sample-bucket-1 --endpoint-url=http://localstack:4566
-        aws s3 create-bucket --bucket sample-bucket-2 --endpoint-url=http://localstack:4566
-        aws s3 create-bucket --bucket sample-bucket-3 --endpoint-url=http://localstack:4566
+        aws s3 mb s3://sample-bucket-1 --endpoint-url=http://localstack:4566
+        aws s3 mb s3://sample-bucket-2 --endpoint-url=http://localstack:4566
+        aws s3 mb s3://sample-bucket-3 --endpoint-url=http://localstack:4566
       
     - name: Build
       run: go build -v ./app/...
