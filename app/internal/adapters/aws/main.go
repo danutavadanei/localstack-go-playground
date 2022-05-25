@@ -73,7 +73,7 @@ func (c client) SinkFileToWriter(ctx context.Context, bucket *string, key *strin
 	})
 
 	if err != nil {
-		log.Printf("error getting file with key: %s from s3 bucket (%s): %v", key, bucket, err)
+		log.Printf("error getting file with key: %s from s3 bucket (%s): %v", *key, *bucket, err)
 
 		return 0, err
 	}
@@ -85,7 +85,7 @@ func (c client) SinkFileToWriter(ctx context.Context, bucket *string, key *strin
 	bytesWritten, err := io.Copy(w, o.Body)
 
 	if err != nil {
-		log.Printf("error copying file with key: %s to the http response from s3 bucket (%s): %v", key, bucket, err)
+		log.Printf("error copying file with key: %s to the http response from s3 bucket (%s): %v", *key, *bucket, err)
 
 		return 0, err
 	}
