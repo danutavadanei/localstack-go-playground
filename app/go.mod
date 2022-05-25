@@ -4,12 +4,13 @@ go 1.18
 
 require (
 	github.com/aws/aws-sdk-go v1.44.19
-	github.com/google/uuid v1.3.0
+	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/spf13/viper v1.11.0
 )
 
 require (
+	github.com/felixge/httpsnoop v1.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect

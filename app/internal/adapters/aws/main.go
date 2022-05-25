@@ -78,7 +78,7 @@ func (c client) SinkFileToWriter(ctx context.Context, bucket *string, key *strin
 		return 0, err
 	}
 
-	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", key))
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", *key))
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("Content-Type", *o.ContentType)
 
