@@ -1,8 +1,11 @@
 name: Go
 
+env:
+  AWS_ACCESS_KEY_ID: test
+  AWS_SECRET_ACCESS_KEY: test
+  AWS_DEFAULT_REGION: us-east-1
+
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -28,12 +31,9 @@ jobs:
 
     - name: Configure localstack
       run: |
-        aws configure set aws_access_key_id localstack
-        aws configure set aws_secret_access_key localstack
-        aws configure set default.region eu-west-2
-        aws mb s3://sample-bucket-1 --endpoint-url=http://localstack:4566
-        aws mb s3://sample-bucket-1 --endpoint-url=http://localstack:4566
-        aws mb s3://sample-bucket-1 --endpoint-url=http://localstack:4566
+        aws s3 create-bucket --bucket sample-bucket-1 --endpoint-url=http://localstack:4566
+        aws s3 create-bucket --bucket sample-bucket-2 --endpoint-url=http://localstack:4566
+        aws s3 create-bucket --bucket sample-bucket-3 --endpoint-url=http://localstack:4566
       
     - name: Build
       run: go build -v ./app/...
