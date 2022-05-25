@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
+	"github.com/danutavadanei/localstack-go-playground/internal/adapters/aws"
+	"github.com/danutavadanei/localstack-go-playground/internal/config"
+	"github.com/danutavadanei/localstack-go-playground/internal/server"
 	"github.com/gorilla/mux"
 	"github.com/spf13/viper"
-	"localstack/internal/adapters/aws"
-	"localstack/internal/config"
-	"localstack/internal/server"
 	"log"
 	"net/http"
 	"os"

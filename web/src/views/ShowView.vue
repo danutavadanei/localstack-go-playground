@@ -82,7 +82,8 @@ const axios = inject('axios')
 const files = ref([])
 const bucket = route.params.bucket
 const file = ref(null)
-const apiEndpoint = `http://localhost:8080/s3/buckets/${bucket}`;
+const apiBaseUrl = inject('apiBaseUrl')
+const apiEndpoint = `${apiBaseUrl}/s3/buckets/${bucket}`;
 
 const fetch = async () => {
   return await axios.get(apiEndpoint)

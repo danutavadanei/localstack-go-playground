@@ -1,4 +1,4 @@
-module localstack
+module github.com/danutavadanei/localstack-go-playground
 
 go 1.18
 

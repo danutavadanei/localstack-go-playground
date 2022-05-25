@@ -10,5 +10,5 @@ app.use(router)
 
 app.use(VueAxios, axios)
 app.provide('axios', app.config.globalProperties.axios)
-
+app.provide('apiBaseUrl', import.meta.env.VITE_API_BASE_URL)
 app.mount('#app')

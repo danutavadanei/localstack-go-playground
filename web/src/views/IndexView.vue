@@ -45,9 +45,11 @@ import { RouterLink } from 'vue-router'
 
 const axios = inject('axios')
 const buckets = reactive([])
+const apiBaseUrl = inject('apiBaseUrl')
+const apiEndpoint = `${apiBaseUrl}/s3/buckets`;
 
 onMounted(async () => {
-  await axios.get('http://localhost:8080/s3/buckets')
+  await axios.get(apiEndpoint)
     .then(response => buckets.push(...response.data.Buckets))
 })
 
