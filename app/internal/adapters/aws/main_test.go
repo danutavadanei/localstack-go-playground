@@ -38,5 +38,5 @@ func TestClient_ListBuckets(t *testing.T) {
 
 	assert.NoError(t, err)
 
-	assert.Equal(t, 3, len(buckets.Buckets))
+	assert.Equal(t, 5, len(buckets.Buckets))
 }
